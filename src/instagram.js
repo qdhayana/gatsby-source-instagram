@@ -92,17 +92,21 @@ export async function apiInstagramPosts({
   username,
   paginate = `100`,
   maxPosts,
+  endpoint
 }) {
+  let apiEndpoint = `https://graph.facebook.com/v3.1`
+  if (endpoint) {
+    apiEndpoint = endpoint
+  }
   return axios
     .get(
-      `https://graph.facebook.com/v3.1/${instagram_id}/media?fields=media_url,thumbnail_url,caption,media_type,like_count,shortcode,timestamp,comments_count,username&limit=${paginate}&access_token=${access_token}`
+      `${apiEndpoint}/${instagram_id}/media?fields=media_url,thumbnail_url,caption,media_type,like_count,shortcode,timestamp,comments_count,username&limit=${paginate}&access_token=${access_token}`
     )
     .then(async response => {
       const results = []
       results.push(...response.data.data)
       while (
-        response.data.paging.next ||
-        (maxPosts && results.length <= maxPosts)
+        maxPosts ? (response.data.paging.next && results.length <= maxPosts) : response.data.paging.next
       ) {
         response = await axios(response.data.paging.next)
         results.push(...response.data.data)

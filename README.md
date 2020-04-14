@@ -85,6 +85,7 @@ plugins: [
       instagram_id: "your instagram_business_account id",
       paginate: 100,
       maxPosts: 1000,
+      endpoint: "https://graph.instagram.com",  // optional, the default api endpoint is https://graph.facebook.com/v3.1, you can also choose https://graph.instagram.com as the base api endpoint, see https://developers.facebook.com/docs/instagram-basic-display-api
     },
   },
 ]
