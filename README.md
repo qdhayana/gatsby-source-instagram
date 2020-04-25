@@ -10,6 +10,8 @@
 
 </div>
 
+// fork from [gatsby-source-instagram](https://github.com/oorestisime/gatsby-source-instagram), support instagram display api, custom endpoint
+
 Source plugin for sourcing data from Instagram. There are four ways to get information from instagram:
 
 - scraping the posts of an Instagram account. It can only get last 12 photos.
