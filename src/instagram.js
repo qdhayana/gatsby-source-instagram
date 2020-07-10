@@ -92,7 +92,7 @@ export async function apiInstagramPosts({
   username,
   paginate = `100`,
   maxPosts,
-  endpoint
+  endpoint,
 }) {
   let apiEndpoint = `https://graph.facebook.com/v3.1`
   if (endpoint) {
@@ -106,7 +106,61 @@ export async function apiInstagramPosts({
       const results = []
       results.push(...response.data.data)
       while (
-        maxPosts ? (response.data.paging.next && results.length <= maxPosts) : response.data.paging.next
+        maxPosts
+          ? response.data.paging.next && results.length <= maxPosts
+          : response.data.paging.next
+      ) {
+        response = await axios(response.data.paging.next)
+        results.push(...response.data.data)
+      }
+      return maxPosts ? results.slice(0, maxPosts) : results
+    })
+    .catch(async err => {
+      console.warn(
+        `\nCould not get instagram posts using the Graph API. Error status ${err}`
+      )
+      console.warn(`Falling back to public scraping... with ${username}`)
+      if (username) {
+        const photos = await scrapingInstagramPosts({
+          username,
+        })
+        return photos
+      }
+      return null
+    })
+}
+
+export async function apiInstagramMePosts({
+  access_token,
+  username,
+  paginate = `100`,
+  maxPosts,
+  endpoint,
+}) {
+  let apiEndpoint = `https://graph.instagram.com`
+  if (endpoint) {
+    apiEndpoint = endpoint
+  }
+  return axios
+    .get(
+      `${apiEndpoint}/me/media?fields=caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username&limit=${paginate}&access_token=${access_token}`
+    )
+    .then(async response => {
+      const results = []
+      // shortcode
+      if (response.data.data && response.data.data.length > 0) {
+        response.data.data = response.data.data.map(item => {
+          const startIndex = item.permalink.indexOf(`/p/`) + 3
+          const endIndex = item.permalink.length - 1
+          item.shortcode = item.permalink.substring(startIndex, endIndex)
+          return item
+        })
+      }
+      results.push(...response.data.data)
+      while (
+        maxPosts
+          ? response.data.paging.next && results.length <= maxPosts
+          : response.data.paging.next
       ) {
         response = await axios(response.data.paging.next)
         results.push(...response.data.data)

@@ -1,8 +1,10 @@
 const _ = require(`lodash`)
 const crypto = require(`crypto`)
+const Auth1 = require(`auth1`)
 const normalize = require(`./normalize`)
 const {
   apiInstagramPosts,
+  apiInstagramMePosts,
   scrapingInstagramPosts,
   apiInstagramHashtags,
   scrapingInstagramHashtags,
@@ -18,6 +20,23 @@ async function getInstagramPosts(options) {
   let data
   if (options.access_token && options.instagram_id) {
     data = await apiInstagramPosts(options)
+  } else if (
+    options.client_id &&
+    options.client_secret &&
+    options.connection_id
+  ) {
+    const auth1 = new Auth1({
+      clientId: options.client_id,
+      clientSecret: options.client_secret,
+    })
+    const { access_token: accessToken } = await auth1.getConnectionAccessToken({
+      connectionId: options.connection_id,
+    })
+    options.access_token = accessToken
+    delete options.client_id
+    delete options.client_secret
+    delete options.connection_id
+    data = await apiInstagramMePosts(options)
   } else {
     data = await scrapingInstagramPosts(options)
   }
@@ -106,7 +125,6 @@ exports.sourceNodes = async (
 ) => {
   const { createNode, touchNode } = actions
   const params = { ...defaultOptions, ...options }
-
   let data
   if (params.type === `account`) {
     data = await getInstagramPosts(params)
