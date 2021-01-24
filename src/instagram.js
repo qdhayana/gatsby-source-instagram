@@ -100,10 +100,16 @@ export async function apiInstagramPosts({
   }
   return axios
     .get(
-      `${apiEndpoint}/${instagram_id}/media?fields=media_url,thumbnail_url,caption,media_type,like_count,shortcode,timestamp,comments_count,username&limit=${paginate}&access_token=${access_token}`
+      `${apiEndpoint}/${instagram_id}/media?fields=media_url,thumbnail_url,caption,media_type,like_count,shortcode,timestamp,comments_count,username,permalink&limit=${paginate}&access_token=${access_token}`
     )
     .then(async response => {
       const results = []
+      response.data.data = response.data.data.map(item => {
+        const startIndex = item.permalink.indexOf(`/p/`) + 3
+        const endIndex = item.permalink.length - 1
+        item.shortcode = item.permalink.substring(startIndex, endIndex)
+        return item
+      })
       results.push(...response.data.data)
       while (
         maxPosts

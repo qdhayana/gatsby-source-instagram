@@ -47,7 +47,7 @@ If you intend to use the public scraping method then you need to pass the concer
 // In your gatsby-config.js
 plugins: [
   {
-    resolve: `theowenyoung/gatsby-source-instagram`,
+    resolve: `@theowenyoung/gatsby-source-instagram`,
     options: {
       username: `username`,
     },
@@ -63,7 +63,7 @@ If you want to source a user's profile from their username then you need the fol
 // In your gatsby-config.js
 plugins: [
   {
-    resolve: `theowenyoung/gatsby-source-instagram`,
+    resolve: `@theowenyoung/gatsby-source-instagram`,
     options: {
       type: `user-profile`,
       username: `username`,
@@ -77,10 +77,24 @@ plugins: [
 If you intend to use the Instagram Graph Api then you need to pass the instagram id and an access token
 
 ```javascript
-// In your gatsby-config.js
+// get your own media
 plugins: [
   {
-    resolve: `theowenyoung/gatsby-source-instagram`,
+    resolve: `@theowenyoung/gatsby-source-instagram`,
+    options: {
+      access_token: "a valid access token",
+    },
+  },
+]
+```
+
+> How to get access token?
+
+```javascript
+// more params
+plugins: [
+  {
+    resolve: `@theowenyoung/gatsby-source-instagram`,
     options: {
       username: `username`,
       access_token: "a valid access token",
@@ -106,7 +120,7 @@ If you want to source nodes from hashtags then you need the following:
 // In your gatsby-config.js
 plugins: [
   {
-    resolve: `theowenyoung/gatsby-source-instagram`,
+    resolve: `@theowenyoung/gatsby-source-instagram`,
     options: {
       type: `hashtag`,
       hashtag: `snowing`,
@@ -208,7 +222,11 @@ To use image processing you need gatsby-transformer-sharp, gatsby-plugin-sharp a
 
 You can apply image processing on each instagram node. To access image processing in your queries you need to use the localFile on the **InstaNode** as shown above:
 
-## Instagram Graph API token
+## Instagram Graph API display API token
+
+See [How to create access_token using User Token Generator](https://github.com/nbcommunication/InstagramBasicDisplayApi#creating-a-facebook-app)
+
+## Instagram Graph API business token
 
 [Special thanks to LekoArts](https://github.com/LekoArts)
 

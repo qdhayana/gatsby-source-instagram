@@ -20,6 +20,8 @@ async function getInstagramPosts(options) {
   let data
   if (options.access_token && options.instagram_id) {
     data = await apiInstagramPosts(options)
+  } else if (options.access_token) {
+    data = await apiInstagramMePosts(options)
   } else if (
     options.client_id &&
     options.client_secret &&
@@ -81,6 +83,8 @@ function createPostNode(datum, params) {
     timestamp:
       datum.taken_at_timestamp || new Date(datum.timestamp).getTime() / 1000,
     dimensions: datum.dimensions,
+    createdAt: new Date(datum.timestamp).toISOString(),
+    permalink: datum.permalink,
     comments:
       _.get(datum, `edge_media_to_comment.count`) || datum.comments_count,
   }
