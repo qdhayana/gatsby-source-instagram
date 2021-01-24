@@ -47,7 +47,7 @@ If you intend to use the public scraping method then you need to pass the concer
 // In your gatsby-config.js
 plugins: [
   {
-    resolve: `gatsby-source-instagram`,
+    resolve: `theowenyoung/gatsby-source-instagram`,
     options: {
       username: `username`,
     },
@@ -63,7 +63,7 @@ If you want to source a user's profile from their username then you need the fol
 // In your gatsby-config.js
 plugins: [
   {
-    resolve: `gatsby-source-instagram`,
+    resolve: `theowenyoung/gatsby-source-instagram`,
     options: {
       type: `user-profile`,
       username: `username`,
@@ -80,14 +80,15 @@ If you intend to use the Instagram Graph Api then you need to pass the instagram
 // In your gatsby-config.js
 plugins: [
   {
-    resolve: `gatsby-source-instagram`,
+    resolve: `theowenyoung/gatsby-source-instagram`,
     options: {
       username: `username`,
       access_token: "a valid access token",
-      instagram_id: "your instagram_business_account id",
+      instagram_id:
+        "your instagram_business_account id / or instagram user id if you use graph.instagram.com endpoint",
       paginate: 100,
       maxPosts: 1000,
-      endpoint: "https://graph.instagram.com",  // optional, the default api endpoint is https://graph.facebook.com/v3.1, you can also choose https://graph.instagram.com as the base api endpoint, see https://developers.facebook.com/docs/instagram-basic-display-api
+      endpoint: "https://graph.instagram.com", // optional, the default api endpoint is https://graph.facebook.com/v3.1, you can also choose https://graph.instagram.com as the base api endpoint, see https://developers.facebook.com/docs/instagram-basic-display-api
     },
   },
 ]
@@ -105,7 +106,7 @@ If you want to source nodes from hashtags then you need the following:
 // In your gatsby-config.js
 plugins: [
   {
-    resolve: `gatsby-source-instagram`,
+    resolve: `theowenyoung/gatsby-source-instagram`,
     options: {
       type: `hashtag`,
       hashtag: `snowing`,
