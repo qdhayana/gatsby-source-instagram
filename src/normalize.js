@@ -17,9 +17,7 @@ exports.downloadMediaFile = async ({
     // previously created file node to not try to redownload
     if (cacheMediaData) {
       fileNodeID = cacheMediaData.fileNodeID
-      touchNode({
-        nodeId: cacheMediaData.fileNodeID,
-      })
+      touchNode(datum)
     }
 
     // If we don't have cached data, download the file
