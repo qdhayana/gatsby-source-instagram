@@ -1,52 +1,37 @@
-const { createRemoteFileNode } = require(`gatsby-source-filesystem`)
+// https://www.gatsbyjs.com/plugins/gatsby-source-filesystem/#createremotefilenode
+
+"use strict";
+
+const { createRemoteFileNode } = require(`gatsby-source-filesystem`);
 
 exports.downloadMediaFile = async ({
-  datum,
-  store,
-  cache,
+  node,
+  getCache,
   createNode,
   createNodeId,
-  touchNode,
 }) => {
-  let fileNodeID
-  if (datum.internal.type === `InstaNode`) {
-    const mediaDataCacheKey = `instagram-media-${datum.id}`
-    const cacheMediaData = await cache.get(mediaDataCacheKey)
+  let fileNode;
 
-    // If we have cached media data reuse
-    // previously created file node to not try to redownload
-    if (cacheMediaData) {
-      fileNodeID = cacheMediaData.fileNodeID
-      touchNode(datum)
-    }
-
-    // If we don't have cached data, download the file
-    if (!fileNodeID) {
-      try {
-        const fileNode = await createRemoteFileNode({
-          url: datum.preview,
-          store,
-          cache,
-          createNode,
-          createNodeId,
-        })
-
-        if (fileNode) {
-          fileNodeID = fileNode.id
-
-          await cache.set(mediaDataCacheKey, {
-            fileNodeID,
-          })
-        }
-      } catch (e) {
-        console.log(`Could not download file, error is`, e)
-      }
+  if (node.internal.type === `InstaNode`) {
+    try {
+      fileNode = await createRemoteFileNode({
+        url: node.preview,
+        parentNodeId: node.id,
+        getCache,
+        createNode,
+        createNodeId,
+      });
+    } catch (e) {
+      console.log(e);
+      // Ignore
     }
   }
 
-  if (fileNodeID) {
-    // eslint-disable-next-line require-atomic-updates
-    datum.localFile___NODE = fileNodeID
+  // Adds a field `localFile` to the node
+  // ___NODE appendix tells Gatsby that this field will link to another node
+  if (fileNode) {
+    node.localFile___NODE = fileNode.id;
   }
-  return datum
-}
+
+  return node;
+};
