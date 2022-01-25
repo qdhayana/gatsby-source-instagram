@@ -34,8 +34,8 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "gatsby": "^3.0.0",
-    "gatsby-source-filesystem": "^3.7.1"
+    "gatsby": "^4.4.0",
+    "gatsby-source-filesystem": "^4.4.0"
   },
   "repository": "https://github.com/theowenyoung/gatsby-source-instagram",
   "scripts": {
