@@ -123,37 +123,32 @@ function processDatum(datum, params) {
   return node
 }
 
-exports.sourceNodes = async (
-  { actions, store, cache, createNodeId },
-  options
-) => {
-  const { createNode, touchNode } = actions
-  const params = { ...defaultOptions, ...options }
-  let data
-  if (params.type === `account`) {
-    data = await getInstagramPosts(params)
-  } else if (params.type === `hashtag`) {
-    data = await getInstagramHashtags(params)
-  } else if (params.type === `user-profile`) {
-    data = await getInstagramUser(params)
-  } else {
-    console.warn(`Unknown type for gatsby-source-instagram: ${params.type}`)
-  }
+exports.sourceNodes = async ({ actions, getCache, createNodeId }, options) => {
+  const { createNode } = actions;
+  const params = { ...defaultOptions, ...options };
+  let data;
 
-  // Process data into nodes.
+  if (params.type === `account`) {
+    data = await getInstagramPosts(params);
+  } else if (params.type === `hashtag`) {
+    data = await getInstagramHashtags(params);
+  } else if (params.type === `user-profile`) {
+    data = await getInstagramUser(params);
+  } else {
+    console.warn(`Unknown type for gatsby-source-instagram: ${params.type}`);
+  } // Process data into nodes.
+
   if (data) {
     return Promise.all(
-      data.map(async datum => {
-        const res = await normalize.downloadMediaFile({
-          datum: processDatum(datum, params),
-          store,
-          cache,
+      data.map(async (node) => {
+        const modifiedNode = await normalize.downloadMediaFile({
+          node: processDatum(node, params),
+          getCache,
           createNode,
           createNodeId,
-          touchNode,
-        })
-        createNode(res)
+        });
+        return createNode(modifiedNode);
       })
-    )
+    );
   }
-}
+};
